@@ -5,7 +5,7 @@ import SnapScrollCarousel from '../components/SnapScrollCarousel';
 
 const Projects = ({className = ''}) => {
     return (
-        <div className={`projects container text-center h-screen w-screen flex flex-col justify-center items-center text-center ${className}`}>
+        <div className={`projects ${className}`}>
             <h1>Projects</h1>
             <ul>
                 <li>Project 1: A web application built with React and Node.js.</li>

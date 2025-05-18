@@ -13,8 +13,12 @@ function App() {
 
     const handleScroll = () => {
       const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      const halfpage = window.innerHeight / 2;
-      if (currentScrollTop >= halfpage && currentScrollTop <= halfpage * 3) {
+      // start transitioning halfway through the first page
+      const projectsStart = window.innerHeight/2;
+      // transition out after projects page has been scrolled through
+      const projectsEnd = projectsStart + (window.innerHeight);
+      
+      if (currentScrollTop >= projectsStart && currentScrollTop <= projectsEnd) {
       setInProjects(true);
       } else {
       setInProjects(false);
@@ -30,9 +34,9 @@ function App() {
 
   return (
     <div className={`relative m-0 m-auto w-full overflow-x-hidden ${InProjects ? 'inverted' : 'normal'}`}>
-      <AboutMe className={`text-(--text-color)`}/>
-      <Projects />
-      <Resume className={`text-(--text-color)`}/>
+      <AboutMe className={`text-(--text-color) page`}/>
+      <Projects className={`page`}/>
+      <Resume className={`text-(--text-color) page`}/>
       <div className="footer text-center">
         <p>© 2023 My Portfolio</p>
       </div>

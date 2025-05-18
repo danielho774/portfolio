@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 const Resume = ({ className = '' }) => {
     return (
-        <div className={`resume container text-center h-screen w-screen flex flex-col justify-center items-center text-center ${className}`}>
+        <div className={`resume ${className}`}>
             <h1>Resume</h1>
             <form
                 className="resume-form"

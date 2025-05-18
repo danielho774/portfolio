@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 const AboutMe = ({ className = '' }) => {
     return (
-        <div className={`about-me text-center h-screen w-full flex flex-col justify-center text-center ${className}`}>
+        <div className={`about-me ${className}`}>
             <h1>About Me</h1>
             <p>
                 Hello! I'm a software developer with a passion for creating web applications. I love working with React and exploring new technologies.
