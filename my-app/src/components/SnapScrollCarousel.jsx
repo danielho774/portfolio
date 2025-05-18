@@ -1,6 +1,9 @@
 import React from 'react';
 import { useState, useRef, useEffect } from 'react';
 
+// initial scroll time
+let lastScrollTime = 0;
+
 const SnapScrollCarousel = ({ children, className = '' }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const containerRef = useRef(null);
@@ -9,12 +12,13 @@ const SnapScrollCarousel = ({ children, className = '' }) => {
   
   // Handle wheel event for horizontal scrolling
   const handleWheel = (() => {
+
     let isAnimating = false;
     let accumulatedDelta = 0;
-    let lastScrollTime = 0;
-    const SCROLL_COOLDOWN = 500; // Time in ms before allowing another scroll action
-    const DELTA_THRESHOLD = 30; // Threshold to trigger a scroll
     
+    const SCROLL_COOLDOWN = 300; // Time in ms before allowing another scroll action
+    const DELTA_THRESHOLD = 50; // Threshold to trigger a scroll
+
     return (e) => {
       e.preventDefault();
       const now = Date.now();
@@ -23,9 +27,12 @@ const SnapScrollCarousel = ({ children, className = '' }) => {
       accumulatedDelta += e.deltaY;
       
       // Return early if we're still animating or in cooldown period
-      if (isAnimating || (now - lastScrollTime < SCROLL_COOLDOWN && Math.abs(accumulatedDelta) < DELTA_THRESHOLD * 3)) {
+      if (isAnimating || (now - lastScrollTime < SCROLL_COOLDOWN || Math.abs(accumulatedDelta) < DELTA_THRESHOLD * 3)) {
         return;
       }
+      
+      // Update last scroll time
+      lastScrollTime = now;
       
       // Determine scroll direction based on accumulated delta
       let direction = 0;
@@ -39,7 +46,6 @@ const SnapScrollCarousel = ({ children, className = '' }) => {
       
       // Reset accumulated delta
       accumulatedDelta = 0;
-      lastScrollTime = now;
       
       // Calculate new index with circular navigation
       let newIndex;
@@ -86,9 +92,6 @@ const SnapScrollCarousel = ({ children, className = '' }) => {
       left: targetPosition,
       behavior: 'smooth'
     });
-    
-    // Wait for animation to complete before allowing next scroll
-    setTimeout(callback, 450); // Slightly less than SCROLL_COOLDOWN
   };
   
   // Ensure wheel events are properly captured
