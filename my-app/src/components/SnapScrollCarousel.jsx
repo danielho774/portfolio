@@ -112,12 +112,12 @@ const SnapScrollCarousel = ({ children, className = '' }) => {
         })}
       </div>
 
-      <div className="flex justify-between mt-4 max-w-2xl mx-auto">
-        <div className="flex mx-auto items-center space-x-1">
+      <div className="justify-between mt-4 max-w-2xl mx-auto">
+        <div className="flex mx-auto w-1/2">
           {Array.from({ length: itemCount }).map((_, i) => (
             <button
               key={i}
-              className={`w-2 h-2 rounded p-2 ${i === currentIndex ? 'bg-blue-500' : 'bg-gray-300'}`}
+              className={`w-2 h-2 rounded-4 mx-auto p-2 ${i === currentIndex ? 'bg-blue-500' : 'bg-gray-300'}`}
               onClick={() => goToItem(i)}
             />
           ))}
