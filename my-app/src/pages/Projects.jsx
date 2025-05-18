@@ -1,6 +1,6 @@
 import React from 'react';
-import '../App.css';
 import 'bootstrap/dist/css/bootstrap.css';
+import '../index.css';
 import SnapScrollCarousel from '../components/SnapScrollCarousel';
 
 const Projects = ({className = ''}) => {
