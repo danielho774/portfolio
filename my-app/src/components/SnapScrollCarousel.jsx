@@ -102,8 +102,8 @@ const SnapScrollCarousel = ({ children, className = '' }) => {
           
           return (
             <div 
-              className={`snap-item flex-shrink-0 snap-center transition-all duration-300 ${
-                isActive ? 'snap-center w-full opacity-100' : 'w-0 opacity-0'
+              className={`snap-x-item flex-shrink-0 snap-center transition-all duration-300 ${
+                isActive ? 'snap-x-center w-full opacity-100' : 'w-0 opacity-0'
               }`}
             >
               {child}

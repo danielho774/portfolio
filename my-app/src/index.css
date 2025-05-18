@@ -2,7 +2,7 @@
 
 
 :root {
-  --bg-color: #D59B73;
+  --bg-color: #f2f0ef;
   --text-color: #000000;
 
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -35,9 +35,16 @@ h1 {
   line-height: 1.1;
 }
 
+.normal {
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  transition: background-color 2s ease;
+}
+
 .inverted {
-  color: var(--bg-color) !important;
-  background-color: var(--text-color) !important;
+  color: var(--bg-color);
+  background-color: var(--text-color);
+  transition: background-color 2s ease;
 }
 
 /* @media (prefers-color-scheme: light) {
