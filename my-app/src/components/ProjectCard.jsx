@@ -4,7 +4,7 @@ import '../index.css';
 
 const ProjectCard = ({ projectName='', projectDesc='', projectImg='', className = '' }) => {
     return (
-        <div className={`project-card ${className} rounded-lg shadow-lg p-4 w-1/2 mx-auto`}>
+        <div className={`project-card ${className} rounded-lg shadow-lg border-solid border-2 border-white p-4 w-1/2 mx-auto`}>
             <div className="project-header w-full flex justify-center items-center mb-4 h-1/5">
                 <h2 className="text-2xl font-bold text-center">{projectName}</h2>
             </div>

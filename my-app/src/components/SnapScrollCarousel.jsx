@@ -8,48 +8,87 @@ const SnapScrollCarousel = ({ children, className = '' }) => {
   const itemCount = childrenArray.length;
   
   // Handle wheel event for horizontal scrolling
-  const handleWheel = (e) => {
-    e.preventDefault();
+  const handleWheel = (() => {
+    let isAnimating = false;
+    let accumulatedDelta = 0;
+    let lastScrollTime = 0;
+    const SCROLL_COOLDOWN = 500; // Time in ms before allowing another scroll action
+    const DELTA_THRESHOLD = 30; // Threshold to trigger a scroll
     
-    // Determine scroll direction
-    const direction = e.deltaY > 0 ? 1 : -1;
-    
-    // Calculate new index and implement circular navigation
-    // If at the end, go to start; if at start, go to end
-    if (currentIndex === 0 && direction === -1) {
-      setCurrentIndex(itemCount - 1);
-      scrollToIndex(itemCount - 1);
-      return;
-    } else if (currentIndex === itemCount - 1 && direction === 1) {
-      setCurrentIndex(0);
-      scrollToIndex(0);
-      return;
-    } else {
-      const newIndex = Math.max(0, Math.min(itemCount - 1, currentIndex + direction));
+    return (e) => {
+      e.preventDefault();
+      const now = Date.now();
+      
+      // Accumulate delta values
+      accumulatedDelta += e.deltaY;
+      
+      // Return early if we're still animating or in cooldown period
+      if (isAnimating || (now - lastScrollTime < SCROLL_COOLDOWN && Math.abs(accumulatedDelta) < DELTA_THRESHOLD * 3)) {
+        return;
+      }
+      
+      // Determine scroll direction based on accumulated delta
+      let direction = 0;
+      if (accumulatedDelta > DELTA_THRESHOLD) {
+        direction = 1;
+      } else if (accumulatedDelta < -DELTA_THRESHOLD) {
+        direction = -1;
+      } else {
+        return; // Not enough accumulated delta to trigger a scroll
+      }
+      
+      // Reset accumulated delta
+      accumulatedDelta = 0;
+      lastScrollTime = now;
+      
+      // Calculate new index with circular navigation
+      let newIndex;
+      if (currentIndex === 0 && direction === -1) {
+        newIndex = itemCount - 1;
+      } else if (currentIndex === itemCount - 1 && direction === 1) {
+        newIndex = 0;
+      } else {
+        newIndex = Math.max(0, Math.min(itemCount - 1, currentIndex + direction));
+      }
       
       // Only update if index changed
       if (newIndex !== currentIndex) {
+        isAnimating = true;
         setCurrentIndex(newIndex);
-        scrollToIndex(newIndex);
+        
+        // Smooth scroll with animation
+        smoothScrollToIndex(newIndex, () => {
+          isAnimating = false;
+        });
       }
-    }
-  };
+    };
+  })();
   
   // Scroll to specific index
-  const scrollToIndex = (index) => {
-    if (!containerRef.current) return;
-    
-    const container = containerRef.current;
-    const items = container.querySelectorAll('.snap-item');
-    
-    if (items[index]) {
-      // Smooth scroll to center the selected item
-      items[index].scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'center'
-      });
+  const smoothScrollToIndex = (index, callback) => {
+    const targetElement = document.getElementById(`item-${index}`);
+    if (!targetElement) {
+      if (callback) callback();
+      return;
     }
+    
+    const container = document.getElementById('scrollable-container'); // Replace with your container id
+    if (!container) {
+      if (callback) callback();
+      return;
+    }
+    
+    const targetPosition = targetElement.offsetLeft - 
+      (container.clientWidth / 2) + (targetElement.clientWidth / 2);
+    
+    // Use smooth scrolling behavior
+    container.scrollTo({
+      left: targetPosition,
+      behavior: 'smooth'
+    });
+    
+    // Wait for animation to complete before allowing next scroll
+    setTimeout(callback, 450); // Slightly less than SCROLL_COOLDOWN
   };
   
   // Ensure wheel events are properly captured
@@ -60,6 +99,28 @@ const SnapScrollCarousel = ({ children, className = '' }) => {
     // Add passive: false to ensure preventDefault works
     container.addEventListener('wheel', handleWheel, { passive: false });
     
+    // Add touch support for mobile devices
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    container.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    
+    container.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      const difference = touchStartX - touchEndX;
+      
+      // Simulate wheel event based on touch swipe
+      if (Math.abs(difference) > 50) {
+        const simulatedEvent = {
+          deltaY: difference > 0 ? 100 : -100,
+          preventDefault: () => {}
+        };
+        handleWheel(simulatedEvent);
+      }
+    }, { passive: true });
+
     return () => {
       container.removeEventListener('wheel', handleWheel);
     };
@@ -68,7 +129,7 @@ const SnapScrollCarousel = ({ children, className = '' }) => {
   // Initial scroll to first item
   useEffect(() => {
     if (containerRef.current && childrenArray.length > 0) {
-      scrollToIndex(0);
+      smoothScrollToIndex(0);
     }
   }, []);
   
@@ -76,7 +137,7 @@ const SnapScrollCarousel = ({ children, className = '' }) => {
   const goToItem = (index) => {
     const newIndex = Math.max(0, Math.min(itemCount - 1, index));
     setCurrentIndex(newIndex);
-    scrollToIndex(newIndex);
+    smoothScrollToIndex(newIndex);
   };
   
   const goNext = () => goToItem(currentIndex + 1);
@@ -102,7 +163,7 @@ const SnapScrollCarousel = ({ children, className = '' }) => {
           
           return (
             <div 
-              className={`snap-x-item flex-shrink-0 snap-center transition-all duration-300 ${
+              className={`snap-x-item flex-shrink-0 snap-center transition-all duration-300 overflow-y-hidden ${
                 isActive ? 'snap-x-center w-full opacity-100' : 'w-0 opacity-0'
               }`}
             >
