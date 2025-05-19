@@ -147,11 +147,11 @@ const SnapScrollCarousel = ({ children, className = '' }) => {
   const goPrev = () => goToItem(currentIndex - 1);
   
   return (
-    <div className="static w-full">
+    <div className="static w-3/4 h-full">
       {/* Container with snap points */}
       <div
         ref={containerRef}
-        className={`w-full flex snap-x ${className}`}
+        className={`w-full h-full flex snap-x ${className}`}
         style={{ 
           scrollbarWidth: 'none', 
           msOverflowStyle: 'none' 
@@ -167,7 +167,7 @@ const SnapScrollCarousel = ({ children, className = '' }) => {
           return (
             <div 
               className={`snap-x-item flex-shrink-0 snap-center transition-all duration-300 overflow-y-hidden ${
-                isActive ? 'snap-x-center w-full opacity-100' : 'w-0 opacity-0'
+                isActive ? 'snap-x-center w-full h-full opacity-100' : 'w-0 opacity-0'
               }`}
             >
               {child}
