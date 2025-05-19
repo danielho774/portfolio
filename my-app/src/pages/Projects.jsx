@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import '../index.css';
 import SnapScrollCarousel from '../components/SnapScrollCarousel';
 import ProjectCard from '../components/ProjectCard';
-import winter from '../assets/winter-wallpaper.jpg';
+import pkmn from '../assets/pkmn.png';
 import hiking from '../assets/hiking.jpg';
 import shai from '../assets/shai.jpg';
 
@@ -18,7 +18,7 @@ const Projects = ({className = ''}) => {
                     <ProjectCard 
                         projectName="Project 1" 
                         projectDesc="This is a description of project 1."
-                        projectImg={winter}
+                        projectImg={pkmn}
                     />
                     <ProjectCard 
                         projectName="Project 2" 
