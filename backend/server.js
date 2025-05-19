@@ -1,8 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
-const multer = require('multer');
 const path = require('path');
+const bodyParser = require('body-parser')
 require('dotenv').config();
 
 const app = express();
@@ -11,26 +11,14 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(bodyParser.json());
 
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename: function(req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));
-  }
-});
-
-const upload = multer({ 
-  storage: storage,
-  limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
-});
 
 // Email sending endpoint
-app.post('/api/send-email', upload.single('attachment'), async (req, res) => {
+app.post('/api/send-email', async (req, res) => {
   try {
-    const { name, email, message } = req.body;
+    const name = req.body.name;
+    const email = req.body.email;
     
     // Create a nodemailer transporter using SMTP
     const transporter = nodemailer.createTransport({
@@ -45,22 +33,19 @@ app.post('/api/send-email', upload.single('attachment'), async (req, res) => {
 
     // Email options
     const mailOptions = {
-      from: process.env.FROM_EMAIL, // sender address
-      to: process.env.TO_EMAIL, // recipient address
+      from: process.env.SMTP_USER, // sender address
+      to: email, // recipient address
       subject: `New Contact Form Submission from ${name}`,
       text: `
         Name: ${name}
         Email: ${email}
-        
-        Message:
-        ${message}
+        This is a test email sent from the backend server.
       `,
       html: `
         <h3>New Contact Form Submission</h3>
         <p><strong>Name:</strong> ${name}</p>
         <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Message:</strong></p>
-        <p>${message.replace(/\n/g, '<br>')}</p>
+        <p>This is a test email sent from the backend server.</p>
       `,
     };
 
@@ -68,8 +53,9 @@ app.post('/api/send-email', upload.single('attachment'), async (req, res) => {
     if (req.file) {
       mailOptions.attachments = [
         {
-          filename: req.file.originalname,
-          path: req.file.path,
+          filename: "Technical_Resume_DHo.pdf",
+          path: "/assets/Technical_Resume_DHo.pdf",
+          contentType: "application/pdf",
         },
       ];
     }
