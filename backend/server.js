@@ -35,17 +35,33 @@ app.post('/api/send-email', async (req, res) => {
     const mailOptions = {
       from: process.env.SMTP_USER, // sender address
       to: email, // recipient address
-      subject: `New Contact Form Submission from ${name}`,
+      subject: `Hi ${name}! Thank you for your interest!`,
       text: `
-        Name: ${name}
-        Email: ${email}
-        This is a test email sent from the backend server.
+        Hey ${name},
+
+        Thank you for your interest in my work! I hope you enjoyed looking through my website.
+        I am currently working on a few projects and will get back to you as soon as possible.
+        In the meantime, feel free to look through my resume which is attached to this email.
+        In case you want to get in touch, please feel free to reply to this email or reach out to me on any of my social media platforms.
+
+        Best,
+        Daniel Ho
+
+        tel: 626-861-1049
+        linkedin: https://www.linkedin.com/in/daniel-k-ho/
       `,
       html: `
-        <h3>New Contact Form Submission</h3>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p>This is a test email sent from the backend server.</p>
+        <p>Hey ${name},</p>
+        <br>
+        <p>Thank you for your interest in my work! I hope you enjoyed looking through my website.</p>
+        <p>I am currently working on a few projects and will get back to you as soon as possible.</p>
+        <p>In the meantime, feel free to look through my resume which is attached to this email.</p>
+        <p>In case you want to get in touch, please feel free to reply to this email or reach out to me on any of my social media platforms.</p>
+        <br>
+        <p>Best,</p>
+        <p>Daniel Ho</p>
+        <p>tel: 626-861-1049</p>
+        <p>linkedin: <a href="https://www.linkedin.com/in/daniel-k-ho/">https://www.linkedin.com/in/daniel-k-ho/</a></p>
       `,
     };
 
